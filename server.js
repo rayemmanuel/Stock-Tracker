@@ -26,7 +26,7 @@ app.get('/api/stock/:symbol', async (req, res) => {
   
   try {
     // Using Finnhub API (60 calls/minute on free tier)
-    const API_KEY = process.env.FINNHUB_API_KEY || 'ctngrj9r01qmemd1tla0ctngrj9r01qmemd1tlag';
+    const API_KEY = process.env.FINNHUB_API_KEY || 'd3oeq59r01quo6o41b50d3oeq59r01quo6o41b5g';
     const url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${API_KEY}`;
     
     const response = await axios.get(url);
