@@ -210,7 +210,8 @@
           </div>
         `).join('') + '</div>';
       } catch (error) {
-        stockContainer.innerHTML = '<div class="error">Failed to load stock data. Please try again.</div>';
+        console.error('Error loading stocks:', error);
+        stockContainer.innerHTML = `<div class="error">Failed to load stock data: ${error.message}. Check console for details.</div>`;
       }
     }
 

@@ -1,17 +1,17 @@
 {
-  "name": "stock-site",
+  "name": "stock-price-tracker",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A simple stock price tracking website",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "axios": "^1.12.2",
-    "express": "^5.1.0",
-    "node-fetch": "^2.7.0"
+    "express": "^4.18.2",
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   }
 }
