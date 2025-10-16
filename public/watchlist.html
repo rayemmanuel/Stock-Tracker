@@ -426,11 +426,21 @@
         
         const data = await response.json();
         
-        if (response.ok) {
-          showMessage(data.message || 'Watchlist created successfully! 🎉', 'success');
-          form.reset();
-          updateCheckboxStyles();
-        } else {
+        // This is the corrected code
+if (response.ok) {
+  showMessage(data.message || 'Watchlist created successfully! 🎉', 'success');
+  
+  // --- ADD THESE TWO LINES ---
+  // 1. Save the selected stocks to localStorage so the other page can see them
+  localStorage.setItem('stockTrackerWatchlist', JSON.stringify(selectedStocks));
+
+  // 2. (Optional) Redirect to the main page after 1.5 seconds to see the change
+  setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+  
+  form.reset();
+  updateCheckboxStyles();
+} else {
+
           showMessage(data.error || 'Failed to create watchlist', 'error');
         }
       } catch (error) {
