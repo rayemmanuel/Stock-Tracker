@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Watchlist - Stock Tracker</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    nav {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      margin: 0 10px;
+      display: inline-block;
+      transition: all 0.3s;
+    }
+    
+    nav a:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    h1 {
+      text-align: center;
+      color: white;
+      margin-bottom: 40px;
+      font-size: 2.5em;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .form-card {
+      background: white;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+    
+    .form-group {
+      margin-bottom: 24px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #2d3748;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    
+    .checkbox-group {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 8px;
+    }
+    
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+    }
+    
+    .checkbox-item input[type="checkbox"] {
+      width: auto;
+      margin-right: 8px;
+    }
+    
+    .checkbox-item label {
+      margin: 0;
+      font-weight: normal;
+    }
+    
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .message {
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 600;
+      display: none;
+    }
+    
+    .message.success {
+      background: #c6f6d5;
+      color: #22543d;
+      display: block;
+    }
+    
+    .message.error {
+      background: #fed7d7;
+      color: #c53030;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav>
+      <a href="index.html">📈 Stock Tracker</a>
+      <a href="watchlist.html">⭐ Create Watchlist</a>
+    </nav>
+    
+    <h1>⭐ Create Your Watchlist</h1>
+    
+    <div class="form-card">
+      <form id="watchlistForm">
+        <div class="form-group">
+          <label for="name">Your Name *</label>
+          <input 
+            type="text" 
+            id="name" 
+            name="name" 
+            required 
+            placeholder="Enter your full name"
+          >
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email Address *</label>
+          <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            required 
+            placeholder="your.email@example.com"
+          >
+        </div>
+        
+        <div class="form-group">
+          <label>Select Stocks to Watch *</label>
+          <div class="checkbox-group">
+            <div class="checkbox-item">
+              <input type="checkbox" id="tsla" name="stocks" value="TSLA">
+              <label for="tsla">Tesla (TSLA)</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="aapl" name="stocks" value="AAPL">
+              <label for="aapl">Apple (AAPL)</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="googl" name="stocks" value="GOOGL">
+              <label for="googl">Google (GOOGL)</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="msft" name="stocks" value="MSFT">
+              <label for="msft">Microsoft (MSFT)</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="amzn" name="stocks" value="AMZN">
+              <label for="amzn">Amazon (AMZN)</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="meta" name="stocks" value="META">
+              <label for="meta">Meta (META)</label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="frequency">Notification Frequency</label>
+          <select id="frequency" name="frequency">
+            <option value="realtime">Real-time updates</option>
+            <option value="hourly">Hourly digest</option>
+            <option value="daily" selected>Daily summary</option>
+            <option value="weekly">Weekly report</option>
+          </select>
+        </div>
+        
+        <button type="submit" id="submitBtn">Create Watchlist</button>
+        
+        <div id="message" class="message"></div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('watchlistForm');
+    const message = document.getElementById('message');
+    const submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Get selected stocks
+      const selectedStocks = Array.from(
+        document.querySelectorAll('input[name="stocks"]:checked')
+      ).map(cb => cb.value);
+      
+      if (selectedStocks.length === 0) {
+        showMessage('Please select at least one stock to watch', 'error');
+        return;
+      }
+      
+      const formData = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        stocks: selectedStocks.join(', '),
+        frequency: document.getElementById('frequency').value
+      };
+      
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+      
+      try {
+        const response = await fetch('/api/watchlist', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          showMessage(data.message, 'success');
+          form.reset();
+        } else {
+          showMessage(data.error || 'Failed to create watchlist', 'error');
+        }
+      } catch (error) {
+        showMessage('Network error. Please try again.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create Watchlist';
+      }
+    });
+    
+    function showMessage(text, type) {
+      message.textContent = text;
+      message.className = `message ${type}`;
+      
+      if (type === 'success') {
+        setTimeout(() => {
+          message.style.display = 'none';
+        }, 5000);
+      }
+    }
+  </script>
+</body>
+</html>

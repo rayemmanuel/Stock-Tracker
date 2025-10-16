@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Price Tracker</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      text-align: center;
+      color: white;
+      margin-bottom: 40px;
+      font-size: 2.5em;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .stock-selector {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+    
+    .stock-btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      background: white;
+      color: #667eea;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 16px;
+    }
+    
+    .stock-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    
+    .stock-btn.active {
+      background: #4c51bf;
+      color: white;
+    }
+    
+    .stock-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .stock-card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+    }
+    
+    .stock-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+    }
+    
+    .stock-symbol {
+      font-size: 24px;
+      font-weight: bold;
+      color: #667eea;
+      margin-bottom: 16px;
+    }
+    
+    .stock-price {
+      font-size: 36px;
+      font-weight: bold;
+      color: #2d3748;
+      margin-bottom: 12px;
+    }
+    
+    .stock-change {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .positive {
+      color: #48bb78;
+    }
+    
+    .negative {
+      color: #f56565;
+    }
+    
+    .stock-info {
+      color: #718096;
+      font-size: 14px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #e2e8f0;
+    }
+    
+    .loading {
+      text-align: center;
+      color: white;
+      font-size: 20px;
+      margin-top: 40px;
+    }
+    
+    .error {
+      background: #fed7d7;
+      color: #c53030;
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav style="text-align: center; margin-bottom: 30px;">
+      <a href="index.html" style="color: white; text-decoration: none; padding: 10px 20px; background: rgba(255,255,255,0.2); border-radius: 8px; margin: 0 10px;">📈 Stock Tracker</a>
+      <a href="watchlist.html" style="color: white; text-decoration: none; padding: 10px 20px; background: rgba(255,255,255,0.2); border-radius: 8px; margin: 0 10px;">⭐ Create Watchlist</a>
+    </nav>
+    
+    <h1>📈 Stock Price Tracker</h1>
+    
+    <div class="stock-selector">
+      <button class="stock-btn active" data-symbol="TSLA">Tesla</button>
+      <button class="stock-btn" data-symbol="AAPL">Apple</button>
+      <button class="stock-btn" data-symbol="GOOGL">Google</button>
+      <button class="stock-btn" data-symbol="MSFT">Microsoft</button>
+      <button class="stock-btn" data-symbol="AMZN">Amazon</button>
+      <button class="stock-btn" data-symbol="META">Meta</button>
+    </div>
+    
+    <div id="stockContainer"></div>
+  </div>
+
+  <script>
+    const stockButtons = document.querySelectorAll('.stock-btn');
+    const stockContainer = document.getElementById('stockContainer');
+    let selectedStocks = new Set(['TSLA']);
+
+    stockButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const symbol = btn.dataset.symbol;
+        
+        if (selectedStocks.has(symbol)) {
+          selectedStocks.delete(symbol);
+          btn.classList.remove('active');
+        } else {
+          selectedStocks.add(symbol);
+          btn.classList.add('active');
+        }
+        
+        loadStocks();
+      });
+    });
+
+    async function fetchStock(symbol) {
+      const response = await fetch(`/api/stock/${symbol}`);
+      if (!response.ok) throw new Error('Failed to fetch');
+      return response.json();
+    }
+
+    async function loadStocks() {
+      if (selectedStocks.size === 0) {
+        stockContainer.innerHTML = '<p class="loading">Select a stock to view</p>';
+        return;
+      }
+
+      stockContainer.innerHTML = '<p class="loading">Loading stock data...</p>';
+      
+      try {
+        const promises = Array.from(selectedStocks).map(symbol => fetchStock(symbol));
+        const stocks = await Promise.all(promises);
+        
+        stockContainer.innerHTML = '<div class="stock-grid">' + stocks.map(stock => `
+          <div class="stock-card">
+            <div class="stock-symbol">${stock.symbol}</div>
+            <div class="stock-price">$${parseFloat(stock.price).toFixed(2)}</div>
+            <div class="stock-change ${parseFloat(stock.change) >= 0 ? 'positive' : 'negative'}">
+              ${parseFloat(stock.change) >= 0 ? '▲' : '▼'} 
+              ${parseFloat(stock.change).toFixed(2)} 
+              (${stock.changePercent})
+            </div>
+            <div class="stock-info">
+              <div>Volume: ${parseInt(stock.volume).toLocaleString()}</div>
+              <div>Last Updated: ${stock.lastUpdated}</div>
+            </div>
+          </div>
+        `).join('') + '</div>';
+      } catch (error) {
+        stockContainer.innerHTML = '<div class="error">Failed to load stock data. Please try again.</div>';
+      }
+    }
+
+    // Load initial stock
+    loadStocks();
+    
+    // Refresh every 60 seconds
+    setInterval(loadStocks, 60000);
+  </script>
+</body>
+</html>
