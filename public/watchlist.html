@@ -12,204 +12,334 @@
     }
     
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Trebuchet MS', Roboto, Ubuntu, sans-serif;
+      background: #131722;
+      color: #d1d4dc;
       min-height: 100vh;
-      padding: 20px;
+    }
+    
+    .header {
+      background: #1e222d;
+      border-bottom: 1px solid #2a2e39;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 20px;
+      font-weight: 600;
+      color: #2962ff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .nav-links a {
+      color: #d1d4dc;
+      text-decoration: none;
+      font-size: 14px;
+      padding: 8px 16px;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+    
+    .nav-links a:hover {
+      background: #2a2e39;
     }
     
     .container {
-      max-width: 600px;
+      max-width: 700px;
       margin: 0 auto;
+      padding: 40px 20px;
     }
     
-    nav {
+    .page-header {
       text-align: center;
-      margin-bottom: 30px;
-    }
-    
-    nav a {
-      color: white;
-      text-decoration: none;
-      padding: 10px 20px;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
-      margin: 0 10px;
-      display: inline-block;
-      transition: all 0.3s;
-    }
-    
-    nav a:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: translateY(-2px);
-    }
-    
-    h1 {
-      text-align: center;
-      color: white;
       margin-bottom: 40px;
-      font-size: 2.5em;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .page-title {
+      font-size: 32px;
+      font-weight: 600;
+      color: #d1d4dc;
+      margin-bottom: 8px;
+    }
+    
+    .page-subtitle {
+      font-size: 14px;
+      color: #787b86;
     }
     
     .form-card {
-      background: white;
-      border-radius: 12px;
+      background: #1e222d;
+      border-radius: 8px;
       padding: 40px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      border: 1px solid #2a2e39;
     }
     
     .form-group {
-      margin-bottom: 24px;
+      margin-bottom: 28px;
+    }
+    
+    .form-group:last-of-type {
+      margin-bottom: 32px;
     }
     
     label {
       display: block;
-      margin-bottom: 8px;
-      color: #2d3748;
-      font-weight: 600;
+      margin-bottom: 10px;
+      color: #d1d4dc;
+      font-weight: 500;
       font-size: 14px;
+    }
+    
+    .required {
+      color: #ef5350;
     }
     
     input, select {
       width: 100%;
-      padding: 12px;
-      border: 2px solid #e2e8f0;
-      border-radius: 8px;
-      font-size: 16px;
-      transition: border-color 0.3s;
+      padding: 12px 14px;
+      background: #131722;
+      border: 1px solid #2a2e39;
+      border-radius: 4px;
+      font-size: 15px;
+      color: #d1d4dc;
+      transition: border-color 0.2s, background 0.2s;
+      font-family: inherit;
+    }
+    
+    input::placeholder {
+      color: #787b86;
     }
     
     input:focus, select:focus {
       outline: none;
-      border-color: #667eea;
+      border-color: #2962ff;
+      background: #1a1e2b;
+    }
+    
+    input:hover, select:hover {
+      border-color: #434651;
     }
     
     .checkbox-group {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 8px;
+      gap: 14px;
+      margin-top: 12px;
     }
     
     .checkbox-item {
       display: flex;
       align-items: center;
+      padding: 12px;
+      background: #131722;
+      border: 1px solid #2a2e39;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .checkbox-item:hover {
+      border-color: #434651;
+      background: #1a1e2b;
     }
     
     .checkbox-item input[type="checkbox"] {
-      width: auto;
-      margin-right: 8px;
+      width: 18px;
+      height: 18px;
+      margin-right: 10px;
+      cursor: pointer;
+      accent-color: #2962ff;
     }
     
     .checkbox-item label {
       margin: 0;
       font-weight: normal;
+      cursor: pointer;
+      font-size: 14px;
+      color: #d1d4dc;
+    }
+    
+    .checkbox-item.checked {
+      border-color: #2962ff;
+      background: rgba(41, 98, 255, 0.08);
     }
     
     button {
       width: 100%;
       padding: 14px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #2962ff;
       color: white;
       border: none;
-      border-radius: 8px;
-      font-size: 18px;
+      border-radius: 4px;
+      font-size: 16px;
       font-weight: 600;
       cursor: pointer;
-      transition: transform 0.3s, box-shadow 0.3s;
+      transition: background 0.2s;
+      font-family: inherit;
     }
     
     button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      background: #1e53e5;
+    }
+    
+    button:active {
+      background: #1948cc;
     }
     
     button:disabled {
-      opacity: 0.6;
+      opacity: 0.5;
       cursor: not-allowed;
-      transform: none;
     }
     
     .message {
       margin-top: 20px;
-      padding: 16px;
-      border-radius: 8px;
+      padding: 14px 16px;
+      border-radius: 4px;
       text-align: center;
-      font-weight: 600;
+      font-size: 14px;
+      font-weight: 500;
       display: none;
+      animation: slideDown 0.3s ease;
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
     
     .message.success {
-      background: #c6f6d5;
-      color: #22543d;
+      background: rgba(38, 166, 154, 0.15);
+      color: #26a69a;
+      border: 1px solid rgba(38, 166, 154, 0.3);
       display: block;
     }
     
     .message.error {
-      background: #fed7d7;
-      color: #c53030;
+      background: rgba(239, 83, 80, 0.15);
+      color: #ef5350;
+      border: 1px solid rgba(239, 83, 80, 0.3);
       display: block;
+    }
+    
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23787b86' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 40px;
+    }
+    
+    .helper-text {
+      font-size: 12px;
+      color: #787b86;
+      margin-top: 6px;
+    }
+    
+    @media (max-width: 600px) {
+      .checkbox-group {
+        grid-template-columns: 1fr;
+      }
+      
+      .form-card {
+        padding: 30px 20px;
+      }
+      
+      .nav-links {
+        gap: 10px;
+      }
+      
+      .nav-links a {
+        font-size: 12px;
+        padding: 6px 12px;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="header">
+    <div class="logo">
+      📈 StockTracker
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Markets</a>
+      <a href="watchlist.html">Watchlist</a>
+    </div>
+  </div>
+  
   <div class="container">
-    <nav>
-      <a href="index.html">📈 Stock Tracker</a>
-      <a href="watchlist.html">⭐ Create Watchlist</a>
-    </nav>
-    
-    <h1>⭐ Create Your Watchlist</h1>
+    <div class="page-header">
+      <div class="page-title">Create Your Watchlist</div>
+      <div class="page-subtitle">Track your favorite stocks and receive personalized updates</div>
+    </div>
     
     <div class="form-card">
       <form id="watchlistForm">
         <div class="form-group">
-          <label for="name">Your Name *</label>
+          <label for="name">Your Name <span class="required">*</span></label>
           <input 
             type="text" 
             id="name" 
             name="name" 
             required 
             placeholder="Enter your full name"
+            autocomplete="name"
           >
         </div>
         
         <div class="form-group">
-          <label for="email">Email Address *</label>
+          <label for="email">Email Address <span class="required">*</span></label>
           <input 
             type="email" 
             id="email" 
             name="email" 
             required 
             placeholder="your.email@example.com"
+            autocomplete="email"
           >
+          <div class="helper-text">We'll send watchlist updates to this email</div>
         </div>
         
         <div class="form-group">
-          <label>Select Stocks to Watch *</label>
+          <label>Select Stocks to Watch <span class="required">*</span></label>
           <div class="checkbox-group">
-            <div class="checkbox-item">
+            <div class="checkbox-item" onclick="toggleCheckbox('tsla')">
               <input type="checkbox" id="tsla" name="stocks" value="TSLA">
               <label for="tsla">Tesla (TSLA)</label>
             </div>
-            <div class="checkbox-item">
+            <div class="checkbox-item" onclick="toggleCheckbox('aapl')">
               <input type="checkbox" id="aapl" name="stocks" value="AAPL">
               <label for="aapl">Apple (AAPL)</label>
             </div>
-            <div class="checkbox-item">
+            <div class="checkbox-item" onclick="toggleCheckbox('googl')">
               <input type="checkbox" id="googl" name="stocks" value="GOOGL">
               <label for="googl">Google (GOOGL)</label>
             </div>
-            <div class="checkbox-item">
+            <div class="checkbox-item" onclick="toggleCheckbox('msft')">
               <input type="checkbox" id="msft" name="stocks" value="MSFT">
               <label for="msft">Microsoft (MSFT)</label>
             </div>
-            <div class="checkbox-item">
+            <div class="checkbox-item" onclick="toggleCheckbox('amzn')">
               <input type="checkbox" id="amzn" name="stocks" value="AMZN">
               <label for="amzn">Amazon (AMZN)</label>
             </div>
-            <div class="checkbox-item">
+            <div class="checkbox-item" onclick="toggleCheckbox('meta')">
               <input type="checkbox" id="meta" name="stocks" value="META">
               <label for="meta">Meta (META)</label>
             </div>
@@ -238,10 +368,34 @@
     const message = document.getElementById('message');
     const submitBtn = document.getElementById('submitBtn');
 
+    function toggleCheckbox(id) {
+      const checkbox = document.getElementById(id);
+      checkbox.checked = !checkbox.checked;
+      updateCheckboxStyles();
+    }
+
+    function updateCheckboxStyles() {
+      document.querySelectorAll('.checkbox-item').forEach(item => {
+        const checkbox = item.querySelector('input[type="checkbox"]');
+        if (checkbox.checked) {
+          item.classList.add('checked');
+        } else {
+          item.classList.remove('checked');
+        }
+      });
+    }
+
+    // Prevent double toggle when clicking checkbox directly
+    document.querySelectorAll('.checkbox-item input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setTimeout(updateCheckboxStyles, 0);
+      });
+    });
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      // Get selected stocks
       const selectedStocks = Array.from(
         document.querySelectorAll('input[name="stocks"]:checked')
       ).map(cb => cb.value);
@@ -259,7 +413,7 @@
       };
       
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Submitting...';
+      submitBtn.textContent = 'Creating Watchlist...';
       
       try {
         const response = await fetch('/api/watchlist', {
@@ -273,13 +427,14 @@
         const data = await response.json();
         
         if (response.ok) {
-          showMessage(data.message, 'success');
+          showMessage(data.message || 'Watchlist created successfully! 🎉', 'success');
           form.reset();
+          updateCheckboxStyles();
         } else {
           showMessage(data.error || 'Failed to create watchlist', 'error');
         }
       } catch (error) {
-        showMessage('Network error. Please try again.', 'error');
+        showMessage('Network error. Please check your connection and try again.', 'error');
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Create Watchlist';

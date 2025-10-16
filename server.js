@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // API endpoint to get stock data with caching
 app.get('/api/stock/:symbol', async (req, res) => {
-  const { symbol } = req.params.toUpperCase();
+const symbol = req.params.symbol.toUpperCase();
   
   // Check cache first
   const cached = cache.get(symbol);
