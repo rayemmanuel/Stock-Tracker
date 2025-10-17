@@ -10,12 +10,60 @@ const PORT = process.env.PORT || 3000;
 const cache = new Map();
 const CACHE_DURATION = 60000; // 1 minute
 
+// Rate limiting queue for API requests
+const requestQueue = [];
+let isProcessingQueue = false;
+const MAX_REQUESTS_PER_MINUTE = 55; // Keep under Finnhub's 60/min limit
+const REQUEST_INTERVAL = 60000 / MAX_REQUESTS_PER_MINUTE; // ~1091ms between requests
+
 // Middleware
 app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// API endpoint to get stock data with caching
+// Process queue with rate limiting
+async function processQueue() {
+  if (isProcessingQueue || requestQueue.length === 0) return;
+  
+  isProcessingQueue = true;
+  
+  while (requestQueue.length > 0) {
+    const { symbol, resolve, reject } = requestQueue.shift();
+    
+    try {
+      const API_KEY = process.env.FINNHUB_API_KEY;
+      
+      if (!API_KEY) {
+        reject(new Error('API key not configured'));
+        continue;
+      }
+      
+      const url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${API_KEY}`;
+      const response = await axios.get(url);
+      
+      resolve(response.data);
+      
+      // Wait before next request to respect rate limit
+      if (requestQueue.length > 0) {
+        await new Promise(r => setTimeout(r, REQUEST_INTERVAL));
+      }
+    } catch (error) {
+      reject(error);
+    }
+  }
+  
+  isProcessingQueue = false;
+}
+
+// Queue API request with rate limiting
+function queueApiRequest(symbol) {
+  return new Promise((resolve, reject) => {
+    requestQueue.push({ symbol, resolve, reject });
+    processQueue();
+  });
+}
+
+// API endpoint to get stock data with caching and rate limiting
 app.get('/api/stock/:symbol', async (req, res) => {
   const symbol = req.params.symbol.toUpperCase();
   
@@ -26,19 +74,8 @@ app.get('/api/stock/:symbol', async (req, res) => {
   }
   
   try {
-    // Using Finnhub API (60 calls/minute on free tier)
-    const API_KEY = process.env.FINNHUB_API_KEY;
-    
-    if (!API_KEY) {
-      return res.status(500).json({ 
-        error: 'API key not configured. Please add FINNHUB_API_KEY to .env file' 
-      });
-    }
-    
-    const url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${API_KEY}`;
-    
-    const response = await axios.get(url);
-    const data = response.data;
+    // Use rate-limited queue
+    const data = await queueApiRequest(symbol);
     
     if (data.c && data.c !== 0) {
       const stockData = {
@@ -62,6 +99,14 @@ app.get('/api/stock/:symbol', async (req, res) => {
     }
   } catch (error) {
     console.error('API Error:', error.message);
+    
+    // Return cached data even if expired, rather than error
+    const expired = cache.get(symbol);
+    if (expired) {
+      console.log(`Returning stale cache for ${symbol}`);
+      return res.json(expired.data);
+    }
+    
     res.status(500).json({ error: 'Failed to fetch stock data' });
   }
 });
