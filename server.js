@@ -118,64 +118,68 @@ function queueApiRequest(symbol, timeout = 10000) {
 }
 
 // BULLETPROOF API endpoint with multiple fallback layers
+// Replace your entire '/api/stock/:symbol' endpoint with this
 app.get('/api/stock/:symbol', async (req, res) => {
-  const symbol = req.params.symbol.toUpperCase();
-  
-  console.log(`Request for ${symbol} - Queue size: ${requestQueue.length}`);
-  
-  // LAYER 1: Fresh cache (< 5 minutes old)
-  const cached = cache.get(symbol);
-  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-    console.log(`✓ Serving fresh cache for ${symbol}`);
-    return res.json(cached.data);
-  }
-  
-  // LAYER 2: Try to get fresh data
+  const symbol = req.params.symbol ? req.params.symbol.toUpperCase() : 'TSLA';
+  console.log(`[${new Date().toISOString()}] Request for ${symbol}`);
+  res.setHeader('Content-Type', 'application/json');
+
+  // This single try...catch block will handle all unexpected errors
   try {
-    const data = await queueApiRequest(symbol, 8000);
-    
-    if (data.c && data.c !== 0) {
-      const stockData = {
-        symbol: symbol,
-        price: data.c.toFixed(2),
-        change: (data.d || 0).toFixed(2),
-        changePercent: (data.dp || 0).toFixed(2) + '%',
-        volume: data.v || 0,
-        lastUpdated: new Date(data.t * 1000).toLocaleDateString()
-      };
-      
-      // Store in cache
-      cache.set(symbol, {
-        data: stockData,
-        timestamp: Date.now()
-      });
-      
-      console.log(`✓ Fresh data for ${symbol}`);
-      return res.json(stockData);
+    // LAYER 1: Fresh cache (< 5 minutes old)
+    const cached = cache.get(symbol);
+    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+      console.log(`✓ Serving fresh cache for ${symbol}`);
+      return res.status(200).json(cached.data);
     }
-  } catch (error) {
-    console.error(`✗ Failed to fetch ${symbol}:`, error.message);
+
+    // LAYER 2: Try to get fresh data
+    try {
+      const data = await queueApiRequest(symbol, 8000);
+      if (data.c && data.c !== 0) {
+        const stockData = {
+          symbol: symbol,
+          price: data.c.toFixed(2),
+          change: (data.d || 0).toFixed(2),
+          changePercent: (data.dp || 0).toFixed(2) + '%',
+          volume: data.v || 0,
+          lastUpdated: new Date(data.t * 1000).toLocaleDateString()
+        };
+        
+        cache.set(symbol, { data: stockData, timestamp: Date.now() });
+        console.log(`✓ Fresh data for ${symbol}`);
+        return res.status(200).json(stockData);
+      }
+    } catch (error) {
+      // If fetching fresh data fails, we log it but DON'T stop. We fall through to the next layer.
+      console.error(`✗ Failed to fetch fresh data for ${symbol}:`, error.message);
+    }
+
+    // LAYER 3: Stale cache (< 1 hour old)
+    if (cached && Date.now() - cached.timestamp < STALE_CACHE_DURATION) {
+      console.log(`⚠ Serving stale cache for ${symbol}`);
+      return res.status(200).json(cached.data);
+    }
+
+    // LAYER 4: Mock data as a last resort
+    console.log(`⚠ Serving mock data for ${symbol}`);
+    const mockData = {
+      symbol: symbol,
+      price: 'N/A',
+      change: '0.00',
+      changePercent: '0.00%',
+      volume: 0,
+      lastUpdated: new Date().toLocaleDateString(),
+      _mock: true
+    };
+    return res.status(200).json(mockData);
+
+  } catch (err) {
+    // This is the CRITICAL catch block that was missing.
+    // It will catch any other unexpected errors and prevent a server crash.
+    console.error('!! Catastrophic error in /api/stock endpoint:', err);
+    res.status(500).json({ error: 'An unexpected server error occurred.' });
   }
-  
-  // LAYER 3: Stale cache (< 1 hour old) - better than nothing
-  if (cached && Date.now() - cached.timestamp < STALE_CACHE_DURATION) {
-    console.log(`⚠ Serving stale cache for ${symbol} (${Math.round((Date.now() - cached.timestamp) / 1000)}s old)`);
-    return res.json(cached.data);
-  }
-  
-  // LAYER 4: Mock data as last resort (better than 404 for testing)
-  console.log(`⚠ Serving mock data for ${symbol}`);
-  const mockData = {
-    symbol: symbol,
-    price: (Math.random() * 500 + 100).toFixed(2),
-    change: (Math.random() * 10 - 5).toFixed(2),
-    changePercent: (Math.random() * 5 - 2.5).toFixed(2) + '%',
-    volume: Math.floor(Math.random() * 10000000),
-    lastUpdated: new Date().toLocaleDateString(),
-    _mock: true
-  };
-  
-  return res.json(mockData);
 });
 
 // Form submission endpoint - Price Alerts
